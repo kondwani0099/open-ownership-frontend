@@ -155,12 +155,28 @@ Required secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_FRONTEND_PROJECT_ID`
 
 ## AI Usage
 
-| Tool               | Used For                                                    |
-|--------------------|-------------------------------------------------------------|
-| **GitHub Copilot** | Code generation, autocomplete, refactoring across all files |
-| **DeepSeek V4 Pro**| Architecture planning, component structure, state management|
-| **Claude Opus 4.6**| UI/UX design system, responsive layout, visual polish       |
-| **Gemini Nano**    | Image generation (logo, office hero image)                  |
-| **Vercel**         | DevOps — hosting frontend and backend                       |
+This project was built with assistance from multiple AI tools. Full transparency below.
 
-All AI-generated code was reviewed, tested, and refined.
+### Tools Used
+
+| Tool               | How It Was Used                                                                 |
+|--------------------|----------------------------------------------------------------------------------|
+| **GitHub Copilot** | In-editor autocomplete and code generation for Vue components, API service layer, router configuration, and README documentation. Used throughout the entire frontend workflow. |
+| **DeepSeek V4 Pro**| Architecture planning — designed the component hierarchy, notification polling system, ActionModal pattern, pagination logic, and the initial Vue Router guard structure. |
+| **Claude Opus 4.6**| UI/UX design — created the SaaS landing page design, two-column login/signup layout, responsive breakpoints, Poppins font migration, and glass-morphism header pattern. Debugged Vue template syntax errors and name collisions. |
+| **Gemini Nano**    | Image generation — created the logo (`logo.png`) and hero image (`office.png`). |
+
+### How Each Tool Was Used
+
+- **Scaffolding**: DeepSeek V4 Pro planned the component tree and data flow. Copilot generated the initial Vue SFC templates, API functions, and router config.
+- **UI Design**: Claude Opus 4.6 designed the visual language — rounded corners, shadows, gradients, status pill colors, and responsive breakpoints. Copilot translated designs into Tailwind classes.
+- **Debugging**: Claude Opus 4.6 fixed the `showModal`/`showFormModal` name collision, the `toggleDropdown` orphaned function body, and the `v-if="showModal"` template mismatch after refactoring.
+- **Documentation**: Copilot drafted the README; content was reviewed and updated with accurate page descriptions, project structure, and trade-offs.
+
+### What Was Independently Verified
+
+- **Component rendering**: Every page was manually tested in the browser — landing, login, signup, applicant dashboard, reviewer queue, and application detail. All loading, empty, error, and success states confirmed.
+- **Responsive design**: Tested at 375px, 768px, 1024px, and 1440px widths. Tables collapse secondary columns, modals slide up from bottom, KPI cards resize correctly.
+- **User flows**: Complete applicant flow (register → login → create → submit → view) and reviewer flow (login → queue → review → approve/reject) verified end-to-end against the live backend.
+- **Custom modals**: ActionModal confirm/success/error states tested for submit, delete, and error handling. No browser `alert()` or `confirm()` remain.
+- **Every line of code** submitted can be explained and justified — no black-box generation was accepted without review.
