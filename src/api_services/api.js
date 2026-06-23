@@ -82,3 +82,7 @@ export function transitionApplication(id, action, comment = '') {
 export function getNotifications(params = {}) {
   return api.get('/notifications/', { params })
 }
+
+export function markNotificationsRead() {
+  return api.put('/notifications/read')
+}

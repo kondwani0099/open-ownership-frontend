@@ -72,7 +72,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getNotifications } from '@/api_services/api'
+import { getNotifications, markNotificationsRead } from '@/api_services/api'
 
 const router = useRouter()
 const open = ref(false)
@@ -80,13 +80,9 @@ const notifications = ref([])
 const unreadCount = ref(0)
 let pollTimer = null
 
-// Request browser notification permission on mount
 onMounted(() => {
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission()
-  }
   fetchNotifications()
-  pollTimer = setInterval(fetchNotifications, 30000) // poll every 30s
+  pollTimer = setInterval(fetchNotifications, 30000)
 })
 
 onUnmounted(() => {
@@ -96,54 +92,23 @@ onUnmounted(() => {
 async function fetchNotifications() {
   try {
     const res = await getNotifications({ limit: 20 })
-    const newNotes = res.data.notifications || []
-    const prevIds = new Set(notifications.value.map(n => n.id))
-
-    // Show browser notification for genuinely new items
-    for (const n of newNotes) {
-      if (!prevIds.has(n.id) && notifications.value.length > 0) {
-        showBrowserNotification(n)
-      }
-    }
-
-    notifications.value = newNotes
-    unreadCount.value = res.data.unread || newNotes.length
+    notifications.value = res.data.notifications || []
+    unreadCount.value = res.data.unread || 0
   } catch (e) {
-    // Silent fail — notifications are non-critical
+    // Silent fail
   }
-}
-
-function showBrowserNotification(n) {
-  if (!('Notification' in window) || Notification.permission !== 'granted') return
-
-  const title = n.application_title
-  const statusLabel = n.new_status.replace(/_/g, ' ')
-  const body = `${statusLabel}${n.comment ? ' — ' + n.comment : ''}`
-
-  try {
-    const notif = new Notification(title, {
-      body,
-      icon: '/favicon.png',
-      tag: `app-${n.application_id}`,
-    })
-    notif.onclick = () => {
-      window.focus()
-      router.push(`/applications/${n.application_id}`)
-      notif.close()
-    }
-  } catch (_) { /* ignore */ }
 }
 
 function toggleDropdown() {
   open.value = !open.value
-  if (open.value) {
-    unreadCount.value = 0
-    fetchNotifications()
-  }
+  if (open.value) fetchNotifications()
 }
 
-function markAllRead() {
-  unreadCount.value = 0
+async function markAllRead() {
+  try {
+    await markNotificationsRead()
+    unreadCount.value = 0
+  } catch (_) { /* ignore */ }
 }
 
 function goToApplication(id) {

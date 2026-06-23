@@ -34,9 +34,9 @@
         <button @click="goBack" class="mt-4 px-4 py-2 border border-red-300 text-[10px] font-bold text-red-600 uppercase hover:bg-red-100 transition-colors">Go Back</button>
       </div>
 
-      <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <!-- Left: Application Info -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="lg:col-span-2 space-y-4 sm:space-y-6">
           <div class="bg-white border border-gray-100 shadow-sm p-6 space-y-4">
             <div class="flex items-center justify-between">
               <h2 class="text-[11px] font-black text-gray-900 uppercase tracking-widest flex items-center gap-2">

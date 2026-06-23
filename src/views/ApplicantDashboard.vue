@@ -27,7 +27,7 @@
     </header>
 
     <!-- Main -->
-    <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 space-y-6">
+    <main class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 pt-4 sm:pt-8 pb-12 space-y-4 sm:space-y-6">
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
         <div class="h-12 w-12 border-4 border-gray-100 border-t-brand-600 rounded-full animate-spin mb-4"></div>
         <p class="text-xs font-medium text-gray-400 animate-pulse">Loading Applications...</p>
@@ -35,21 +35,21 @@
 
       <div v-else class="space-y-6">
         <!-- KPI Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div v-for="card in kpiCards" :key="card.label" class="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-lg transition-shadow">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-xl flex items-center justify-center" :class="card.bg">
-                <i :class="[card.icon, card.color]" class="text-sm"></i>
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div v-for="card in kpiCards" :key="card.label" class="bg-white border border-gray-100 rounded-2xl p-3 sm:p-5 hover:shadow-lg transition-shadow">
+            <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center" :class="card.bg">
+                <i :class="[card.icon, card.color]" class="text-xs sm:text-sm"></i>
               </div>
-              <span class="text-[10px] font-semibold text-gray-400 tracking-wider">{{ card.label }}</span>
+              <span class="text-[9px] sm:text-[10px] font-semibold text-gray-400 tracking-wider">{{ card.label }}</span>
             </div>
-            <p class="text-2xl font-extrabold text-gray-900">{{ card.value }}</p>
+            <p class="text-xl sm:text-2xl font-extrabold text-gray-900">{{ card.value }}</p>
           </div>
         </div>
 
         <!-- Actions Bar -->
-        <div class="flex items-center justify-between">
-          <select v-model="statusFilter" class="rounded-xl border border-gray-200 text-xs font-medium py-2 px-4 focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between">
+          <select v-model="statusFilter" class="w-full sm:w-auto rounded-xl border border-gray-200 text-xs font-medium py-2 px-4 focus:border-brand-500 focus:ring-1 focus:ring-brand-500">
             <option value="">All Statuses</option>
             <option value="DRAFT">Draft</option>
             <option value="SUBMITTED">Submitted</option>
@@ -58,7 +58,7 @@
             <option value="REJECTED">Rejected</option>
             <option value="RETURNED_FOR_CHANGES">Returned</option>
           </select>
-          <button @click="openCreateModal" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 text-xs font-semibold rounded-xl transition-all shadow-lg shadow-brand-600/20 flex items-center gap-2">
+          <button @click="openCreateModal" class="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 text-xs font-semibold rounded-xl transition-all shadow-lg shadow-brand-600/20 flex items-center justify-center gap-2">
             <i class="fas fa-plus"></i> New Application
           </button>
         </div>
@@ -69,26 +69,26 @@
             <table class="w-full">
               <thead>
                 <tr class="bg-gray-50/50 border-b border-gray-100">
-                  <th class="py-3.5 px-5 text-left text-[10px] font-semibold text-gray-400 tracking-wider">Title</th>
-                  <th class="py-3.5 px-5 text-left text-[10px] font-semibold text-gray-400 tracking-wider">Category</th>
-                  <th class="py-3.5 px-5 text-right text-[10px] font-semibold text-gray-400 tracking-wider">Amount</th>
-                  <th class="py-3.5 px-5 text-center text-[10px] font-semibold text-gray-400 tracking-wider">Status</th>
-                  <th class="py-3.5 px-5 text-right text-[10px] font-semibold text-gray-400 tracking-wider">Updated</th>
-                  <th class="py-3.5 px-5 text-right text-[10px] font-semibold text-gray-400 tracking-wider">Actions</th>
+                  <th class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-left text-[9px] sm:text-[10px] font-semibold text-gray-400 tracking-wider">Title</th>
+                  <th class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-left text-[9px] sm:text-[10px] font-semibold text-gray-400 tracking-wider hidden sm:table-cell">Category</th>
+                  <th class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-right text-[9px] sm:text-[10px] font-semibold text-gray-400 tracking-wider">Amount</th>
+                  <th class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-center text-[9px] sm:text-[10px] font-semibold text-gray-400 tracking-wider">Status</th>
+                  <th class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-right text-[9px] sm:text-[10px] font-semibold text-gray-400 tracking-wider hidden sm:table-cell">Updated</th>
+                  <th class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-right text-[9px] sm:text-[10px] font-semibold text-gray-400 tracking-wider"></th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-50">
-                <tr v-for="app in applications" :key="app.id" class="hover:bg-gray-50/50 transition-colors">
-                  <td class="py-3.5 px-5 text-sm font-semibold text-gray-900">{{ app.title }}</td>
-                  <td class="py-3.5 px-5 text-xs font-medium text-gray-500">{{ app.category }}</td>
-                  <td class="py-3.5 px-5 text-right text-sm font-bold text-gray-900">{{ formatAmount(app.amount) }}</td>
-                  <td class="py-3.5 px-5 text-center">
-                    <span :class="statusBadgeClass(app.status)" class="text-[10px] font-semibold px-3 py-1 rounded-full">
+                <tr v-for="app in paginatedApplications" :key="app.id" class="hover:bg-gray-50/50 transition-colors">
+                  <td class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-900">{{ app.title }}</td>
+                  <td class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-[10px] sm:text-xs font-medium text-gray-500 hidden sm:table-cell">{{ app.category }}</td>
+                  <td class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-right text-xs sm:text-sm font-bold text-gray-900">{{ formatAmount(app.amount) }}</td>
+                  <td class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-center">
+                    <span :class="statusBadgeClass(app.status)" class="text-[8px] sm:text-[10px] font-semibold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full whitespace-nowrap">
                       {{ app.status.replace(/_/g, ' ') }}
                     </span>
                   </td>
-                  <td class="py-3.5 px-5 text-right text-xs text-gray-400">{{ formatDate(app.updated_at) }}</td>
-                  <td class="py-3.5 px-5 text-right">
+                  <td class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-right text-[10px] sm:text-xs text-gray-400 hidden sm:table-cell">{{ formatDate(app.updated_at) }}</td>
+                  <td class="py-2.5 sm:py-3.5 px-3 sm:px-5 text-right">
                     <div class="flex items-center justify-end gap-1.5">
                       <button v-if="app.status === 'DRAFT'" @click="openEditModal(app)" class="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
                         <i class="fas fa-edit text-xs"></i>
@@ -98,6 +98,9 @@
                       </button>
                       <button @click="viewDetail(app.id)" class="p-2 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors" title="View">
                         <i class="fas fa-eye text-xs"></i>
+                      </button>
+                      <button v-if="app.status === 'DRAFT'" @click="deleteEntry(app)" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                        <i class="fas fa-trash text-xs"></i>
                       </button>
                     </div>
                   </td>
@@ -110,13 +113,22 @@
               </tbody>
             </table>
           </div>
+          <!-- Pagination -->
+          <div v-if="applications.length > 0" class="px-3 sm:px-5 py-3 border-t border-gray-100 flex justify-between items-center bg-gray-50/30">
+            <div class="text-[10px] sm:text-xs text-gray-400 font-medium">Showing {{ startIdx }}-{{ endIdx }} of {{ applications.length }}</div>
+            <div class="flex gap-2">
+              <button @click="currentPage--" :disabled="currentPage === 1" class="px-3 py-1.5 border border-gray-200 text-[10px] sm:text-xs font-semibold rounded-lg disabled:opacity-30 hover:bg-white transition-colors">Prev</button>
+              <span class="px-3 py-1.5 text-[10px] sm:text-xs font-bold text-brand-600">{{ currentPage }} / {{ totalPages }}</span>
+              <button @click="currentPage++" :disabled="currentPage >= totalPages" class="px-3 py-1.5 border border-gray-200 text-[10px] sm:text-xs font-semibold rounded-lg disabled:opacity-30 hover:bg-white transition-colors">Next</button>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Create / Edit Modal -->
-      <div v-if="showModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+      <div v-if="showFormModal" class="fixed inset-0 z-[200] flex items-end sm:items-center justify-center sm:p-4">
         <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" @click="closeModal"></div>
-        <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl relative z-10 overflow-hidden">
+        <div class="bg-white w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl shadow-2xl relative z-10 overflow-hidden max-h-[90vh] overflow-y-auto">
           <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
               <span class="w-2 h-2 rounded-full" :class="editing ? 'bg-amber-500' : 'bg-brand-600'"></span>
@@ -167,15 +179,29 @@
         </div>
       </div>
     </main>
+
+    <!-- Action Modal (replaces alert/confirm) -->
+    <ActionModal
+      :visible="modal.visible"
+      :type="modal.type"
+      :title="modal.title"
+      :message="modal.message"
+      :confirmText="modal.confirmText"
+      :confirmDanger="modal.confirmDanger"
+      @confirm="modal.onConfirm"
+      @close="modal.visible = false"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { listMyApplications, createApplication, updateApplication, transitionApplication } from '@/api_services/api'
+import { api } from '@/api_services/api'
 import AppLogo from '@/components/AppLogo.vue'
 import NotificationBell from '@/components/NotificationBell.vue'
+import ActionModal from '@/components/ActionModal.vue'
 
 const router = useRouter()
 const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
@@ -183,12 +209,34 @@ const loading = ref(false)
 const applications = ref([])
 const statusFilter = ref('')
 
+// Pagination
+const currentPage = ref(1)
+const itemsPerPage = 10
+
+const totalPages = computed(() => Math.ceil(applications.value.length / itemsPerPage) || 1)
+const paginatedApplications = computed(() => applications.value.slice((currentPage.value - 1) * itemsPerPage, currentPage.value * itemsPerPage))
+const startIdx = computed(() => applications.value.length === 0 ? 0 : (currentPage.value - 1) * itemsPerPage + 1)
+const endIdx = computed(() => Math.min(currentPage.value * itemsPerPage, applications.value.length))
+
+// Watch status filter — reset page
+watch(statusFilter, () => { currentPage.value = 1; fetchApplications() })
+
 // Modal state
-const showModal = ref(false)
+const showFormModal = ref(false)
 const editing = ref(false)
 const editId = ref(null)
 const saving = ref(false)
 const error = ref('')
+
+// Action modal (replaces alert/confirm)
+const modal = reactive({
+  visible: false, type: 'confirm', title: '', message: '', confirmText: 'Confirm', confirmDanger: false,
+  onConfirm: () => {},
+})
+
+function showModal(type, title, message, confirmText, danger, callback) {
+  Object.assign(modal, { visible: true, type, title, message, confirmText: confirmText || 'Confirm', confirmDanger: danger || false, onConfirm: () => { modal.visible = false; if (callback) callback() } })
+}
 
 const form = ref({
   title: '',
@@ -242,15 +290,13 @@ async function fetchApplications() {
   }
 }
 
-watch(statusFilter, () => fetchApplications())
-
 // CRUD
 function openCreateModal() {
   editing.value = false
   editId.value = null
   error.value = ''
   form.value = { title: '', category: '', description: '', amount: 0 }
-  showModal.value = true
+  showFormModal.value = true
 }
 
 function openEditModal(app) {
@@ -263,11 +309,11 @@ function openEditModal(app) {
     description: app.description,
     amount: app.amount,
   }
-  showModal.value = true
+  showFormModal.value = true
 }
 
 function closeModal() {
-  showModal.value = false
+  showFormModal.value = false
   editing.value = false
   editId.value = null
   error.value = ''
@@ -296,13 +342,15 @@ async function saveApplication() {
 }
 
 async function submitApplication(id) {
-  if (!confirm('Submit this application for review? You will not be able to edit it afterwards.')) return
-  try {
-    await transitionApplication(id, 'submit')
-    await fetchApplications()
-  } catch (e) {
-    alert(e.response?.data?.detail || 'Submit failed')
-  }
+  showModal('confirm', 'Submit for Review?', 'You will not be able to edit it afterwards.', 'Submit', false, async () => {
+    try {
+      await transitionApplication(id, 'submit')
+      await fetchApplications()
+      showModal('success', 'Submitted!', 'Your application has been submitted for review.')
+    } catch (e) {
+      showModal('error', 'Submit Failed', e.response?.data?.detail || 'Something went wrong.')
+    }
+  })
 }
 
 function viewDetail(id) {
@@ -313,6 +361,18 @@ function logout() {
   localStorage.removeItem('token')
   localStorage.removeItem('user')
   router.push('/login')
+}
+
+async function deleteEntry(app) {
+  showModal('confirm', 'Delete Application?', `"${app.title}" will be permanently deleted.`, 'Delete', true, async () => {
+    try {
+      await api.delete(`/applications/${app.id}`)
+      await fetchApplications()
+      showModal('success', 'Deleted!', 'The application has been deleted.')
+    } catch (e) {
+      showModal('error', 'Delete Failed', e.response?.data?.detail || 'Something went wrong.')
+    }
+  })
 }
 
 onMounted(() => fetchApplications())
