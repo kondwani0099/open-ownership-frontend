@@ -1,0 +1,30 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  background: #f9fafb;
+  color: #111827;
+}
+
+.font-display {
+  font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+}
+
+.mesh-background {
+  background-color: #fff;
+  background-image:
+    linear-gradient(rgba(47, 46, 139, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 46, 139, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
