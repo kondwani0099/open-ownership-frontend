@@ -1,26 +1,25 @@
 <template>
-  <div class="min-h-screen flex flex-col font-mono relative text-gray-900 bg-gray-50">
-    <div class="fixed inset-0 z-0 pointer-events-none mesh-background"></div>
-
+  <div class="min-h-screen flex flex-col text-gray-900 bg-gray-50">
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-[100] shadow-sm">
-      <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-1.5 h-8 bg-emerald-600"></div>
+    <header class="bg-white/80 backdrop-blur-xl border-b border-gray-100/50 sticky top-0 z-[100]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <AppLogo />
+          <div class="w-px h-8 bg-gray-200 hidden sm:block"></div>
           <div>
-            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+            <div class="text-[10px] font-semibold text-gray-400 tracking-wider flex items-center gap-2">
               <i class="fas fa-clipboard-check text-emerald-600"></i>
-              <span>Reviewer // Queue</span>
+              <span>Review Queue</span>
             </div>
-            <h1 class="text-xl font-black text-gray-900 uppercase tracking-tight font-display">{{ user?.name || 'Review Queue' }}</h1>
+            <h1 class="text-lg font-bold text-gray-900">{{ user?.name || 'Review Queue' }}</h1>
           </div>
         </div>
-
         <div class="flex items-center gap-3">
-          <span class="hidden md:inline text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+          <NotificationBell />
+          <span class="hidden md:inline text-xs font-medium text-gray-400">
             <i class="fas fa-circle text-emerald-400 text-[6px] mr-1"></i> {{ user?.email }}
           </span>
-          <button @click="logout" class="text-[10px] font-bold font-mono text-gray-400 hover:text-red-600 uppercase tracking-wider transition-colors">
+          <button @click="logout" class="text-xs font-medium text-gray-400 hover:text-red-500 transition-colors">
             <i class="fas fa-sign-out-alt mr-1"></i> Logout
           </button>
         </div>
@@ -28,33 +27,33 @@
     </header>
 
     <!-- Main -->
-    <main class="flex-1 max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 relative z-10 space-y-6">
+    <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 space-y-6">
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-        <div class="h-12 w-12 border-4 border-gray-100 border-t-emerald-600 rounded-full animate-spin shadow-lg mb-4"></div>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse">Loading Queue...</p>
+        <div class="h-12 w-12 border-4 border-gray-100 border-t-emerald-600 rounded-full animate-spin mb-4"></div>
+        <p class="text-xs font-medium text-gray-400 animate-pulse">Loading Queue...</p>
       </div>
 
       <div v-else class="space-y-6">
         <!-- KPI Cards -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white border border-gray-100 shadow-sm p-4" v-for="card in kpiCards" :key="card.label">
-            <div class="flex items-center gap-2 mb-3">
-              <div class="w-8 h-8 bg-gray-100 flex items-center justify-center">
-                <i :class="[card.icon, card.color]" class="text-xs"></i>
+          <div v-for="card in kpiCards" :key="card.label" class="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-lg transition-shadow">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" :class="card.bg">
+                <i :class="[card.icon, card.color]" class="text-sm"></i>
               </div>
-              <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">{{ card.label }}</span>
+              <span class="text-[10px] font-semibold text-gray-400 tracking-wider">{{ card.label }}</span>
             </div>
-            <p class="text-lg font-black text-gray-900 font-display tracking-tight">{{ card.value }}</p>
+            <p class="text-2xl font-extrabold text-gray-900">{{ card.value }}</p>
           </div>
         </div>
 
         <!-- Filters -->
-        <div class="bg-white border border-gray-100 p-4 shadow-sm">
+        <div class="bg-white border border-gray-100 rounded-2xl p-5">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Status</label>
-              <select v-model="statusFilter" class="w-full rounded-none border border-gray-200 px-4 py-2 text-[10px] font-bold font-mono focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 uppercase">
-                <option value="">All Active</option>
+              <label class="text-[10px] font-semibold text-gray-400 tracking-wider mb-1.5 block">Status</label>
+              <select v-model="statusFilter" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-xs font-medium focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                <option value="">All Statuses</option>
                 <option value="SUBMITTED">Submitted</option>
                 <option value="UNDER_REVIEW">Under Review</option>
                 <option value="RETURNED_FOR_CHANGES">Returned</option>
@@ -63,69 +62,62 @@
               </select>
             </div>
             <div class="md:col-span-2">
-              <label class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Search</label>
-              <input v-model="searchQuery" type="text" placeholder="Search by title, description, or applicant..." class="w-full rounded-none border border-gray-200 px-4 py-2 text-sm font-mono focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+              <label class="text-[10px] font-semibold text-gray-400 tracking-wider mb-1.5 block">Search</label>
+              <input v-model="searchQuery" type="text" placeholder="Search by title, description, or applicant..." class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
             </div>
           </div>
         </div>
 
         <!-- Queue Table -->
-        <div class="bg-white border border-gray-100 shadow-sm overflow-hidden">
+        <div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full border-collapse">
+            <table class="w-full">
               <thead>
-                <tr class="bg-gray-50 border-b border-gray-100">
-                  <th class="py-3 px-4 text-left text-[8px] font-black text-gray-400 uppercase tracking-widest">Title</th>
-                  <th class="py-3 px-4 text-left text-[8px] font-black text-gray-400 uppercase tracking-widest">Applicant</th>
-                  <th class="py-3 px-4 text-left text-[8px] font-black text-gray-400 uppercase tracking-widest">Category</th>
-                  <th class="py-3 px-4 text-right text-[8px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                  <th class="py-3 px-4 text-center text-[8px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                  <th class="py-3 px-4 text-right text-[8px] font-black text-gray-400 uppercase tracking-widest">Updated</th>
-                  <th class="py-3 px-4 text-right text-[8px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+                <tr class="bg-gray-50/50 border-b border-gray-100">
+                  <th class="py-3.5 px-5 text-left text-[10px] font-semibold text-gray-400 tracking-wider">Title</th>
+                  <th class="py-3.5 px-5 text-left text-[10px] font-semibold text-gray-400 tracking-wider">Applicant</th>
+                  <th class="py-3.5 px-5 text-left text-[10px] font-semibold text-gray-400 tracking-wider">Cat</th>
+                  <th class="py-3.5 px-5 text-right text-[10px] font-semibold text-gray-400 tracking-wider">Amount</th>
+                  <th class="py-3.5 px-5 text-center text-[10px] font-semibold text-gray-400 tracking-wider">Status</th>
+                  <th class="py-3.5 px-5 text-right text-[10px] font-semibold text-gray-400 tracking-wider">Updated</th>
+                  <th class="py-3.5 px-5 text-right text-[10px] font-semibold text-gray-400 tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-50">
                 <tr v-for="app in paginatedApps" :key="app.id" class="hover:bg-gray-50/50 transition-colors">
-                  <td class="py-3 px-4 text-[10px] font-bold text-gray-900 uppercase tracking-tight">{{ app.title }}</td>
-                  <td class="py-3 px-4 text-[9px] text-gray-500 font-mono">{{ app.applicant_id }}</td>
-                  <td class="py-3 px-4 text-[8px] font-bold text-gray-500 uppercase">{{ app.category }}</td>
-                  <td class="py-3 px-4 text-right text-[10px] font-bold text-gray-900 font-mono">{{ formatAmount(app.amount) }}</td>
-                  <td class="py-3 px-4 text-center">
-                    <span :class="statusBadgeClass(app.status)" class="text-[8px] font-black px-2 py-0.5 border uppercase font-mono">
+                  <td class="py-3.5 px-5 text-sm font-semibold text-gray-900">{{ app.title }}</td>
+                  <td class="py-3.5 px-5 text-xs text-gray-500">{{ app.applicant_id }}</td>
+                  <td class="py-3.5 px-5 text-xs font-medium text-gray-500">{{ app.category }}</td>
+                  <td class="py-3.5 px-5 text-right text-sm font-bold text-gray-900">{{ formatAmount(app.amount) }}</td>
+                  <td class="py-3.5 px-5 text-center">
+                    <span :class="statusBadgeClass(app.status)" class="text-[10px] font-semibold px-3 py-1 rounded-full">
                       {{ app.status.replace(/_/g, ' ') }}
                     </span>
                   </td>
-                  <td class="py-3 px-4 text-right text-[9px] text-gray-400 font-mono">{{ formatDate(app.updated_at) }}</td>
-                  <td class="py-3 px-4 text-right">
-                    <div class="flex items-center justify-end gap-1">
-                      <!-- Quick actions based on status -->
-                      <button
-                        v-if="app.status === 'SUBMITTED'"
-                        @click="quickAction(app.id, 'review')"
-                        class="px-2 py-1 text-[8px] font-bold font-mono text-blue-600 border border-blue-200 hover:bg-blue-50 uppercase tracking-wider"
-                      >
+                  <td class="py-3.5 px-5 text-right text-xs text-gray-400">{{ formatDate(app.updated_at) }}</td>
+                  <td class="py-3.5 px-5 text-right">
+                    <div class="flex items-center justify-end gap-1.5">
+                      <button v-if="app.status === 'SUBMITTED'" @click="quickAction(app.id, 'review')" class="px-3 py-1.5 text-[10px] font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors">
                         Take Review
                       </button>
-                      <button @click="viewDetail(app.id)" class="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50" title="View">
+                      <button @click="viewDetail(app.id)" class="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="View">
                         <i class="fas fa-eye text-xs"></i>
                       </button>
                     </div>
                   </td>
                 </tr>
                 <tr v-if="filteredApps.length === 0">
-                  <td colspan="7" class="py-12 text-center text-[10px] text-gray-400 uppercase tracking-widest italic font-mono">QUEUE_IS_EMPTY</td>
+                  <td colspan="7" class="py-16 text-center text-sm text-gray-400 font-medium">Queue is empty</td>
                 </tr>
               </tbody>
             </table>
           </div>
-
-          <!-- Pagination -->
-          <div v-if="filteredApps.length > 0" class="px-4 py-3 border-t border-gray-100 flex justify-between items-center bg-gray-50/30">
-            <div class="text-[9px] text-gray-400 uppercase tracking-widest font-mono">Showing {{ startIdx }}-{{ endIdx }} of {{ filteredApps.length }}</div>
+          <div v-if="filteredApps.length > 0" class="px-5 py-3 border-t border-gray-100 flex justify-between items-center bg-gray-50/30">
+            <div class="text-xs text-gray-400 font-medium">Showing {{ startIdx }}-{{ endIdx }} of {{ filteredApps.length }}</div>
             <div class="flex gap-2">
-              <button @click="page--" :disabled="page === 1" class="px-3 py-1 border border-gray-200 text-[9px] font-bold font-mono uppercase disabled:opacity-30 hover:bg-white transition-colors">Prev</button>
-              <span class="px-3 py-1 text-[9px] font-bold font-mono text-emerald-600">{{ page }} / {{ totalPages }}</span>
-              <button @click="page++" :disabled="page >= totalPages" class="px-3 py-1 border border-gray-200 text-[9px] font-bold font-mono uppercase disabled:opacity-30 hover:bg-white transition-colors">Next</button>
+              <button @click="page--" :disabled="page === 1" class="px-3 py-1.5 border border-gray-200 text-xs font-semibold rounded-lg disabled:opacity-30 hover:bg-white transition-colors">Prev</button>
+              <span class="px-3 py-1.5 text-xs font-bold text-brand-600">{{ page }} / {{ totalPages }}</span>
+              <button @click="page++" :disabled="page >= totalPages" class="px-3 py-1.5 border border-gray-200 text-xs font-semibold rounded-lg disabled:opacity-30 hover:bg-white transition-colors">Next</button>
             </div>
           </div>
         </div>
@@ -134,94 +126,46 @@
       <!-- Review Action Modal -->
       <div v-if="showReviewModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" @click="showReviewModal = false"></div>
-        <div class="bg-white w-full max-w-xl shadow-2xl relative z-10 border border-gray-100">
+        <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl relative z-10 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-            <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest flex items-center gap-2">
-              <span class="w-2 h-2 bg-emerald-600"></span>
-              <span>REVIEW_APPLICATION</span>
+            <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+              Review Application
             </h3>
-            <button @click="showReviewModal = false" class="text-gray-400 hover:text-red-500 transition-colors">
+            <button @click="showReviewModal = false" class="text-gray-400 hover:text-red-500 transition-colors p-1">
               <i class="fas fa-times"></i>
             </button>
           </div>
-
           <div class="p-6 space-y-4">
-            <div class="bg-gray-50 border border-gray-100 p-4 space-y-2">
-              <div class="flex justify-between">
-                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Title</span>
-                <span class="text-[10px] font-bold text-gray-900 uppercase">{{ reviewTarget?.title }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Applicant</span>
-                <span class="text-[10px] text-gray-700 font-mono">{{ reviewTarget?.applicant_id }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Amount</span>
-                <span class="text-[10px] font-bold text-gray-900 font-mono">{{ formatAmount(reviewTarget?.amount) }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Status</span>
-                <span :class="statusBadgeClass(reviewTarget?.status)" class="text-[8px] font-black px-2 py-0.5 border uppercase font-mono">{{ reviewTarget?.status?.replace(/_/g, ' ') }}</span>
-              </div>
+            <div class="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+              <div class="flex justify-between text-sm"><span class="text-gray-400 font-medium">Title</span><span class="font-semibold text-gray-900">{{ reviewTarget?.title }}</span></div>
+              <div class="flex justify-between text-sm"><span class="text-gray-400 font-medium">Applicant</span><span class="text-gray-700">{{ reviewTarget?.applicant_id }}</span></div>
+              <div class="flex justify-between text-sm"><span class="text-gray-400 font-medium">Amount</span><span class="font-bold text-gray-900">{{ formatAmount(reviewTarget?.amount) }}</span></div>
+              <div class="flex justify-between text-sm"><span class="text-gray-400 font-medium">Status</span><span :class="statusBadgeClass(reviewTarget?.status)" class="text-[10px] font-semibold px-3 py-1 rounded-full">{{ reviewTarget?.status?.replace(/_/g, ' ') }}</span></div>
             </div>
-
             <div>
-              <label class="block text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1">Action</label>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Action</label>
               <div class="grid grid-cols-3 gap-2">
-                <button
-                  v-if="reviewTarget?.status === 'SUBMITTED'"
-                  @click="reviewAction = 'review'"
-                  :class="reviewAction === 'review' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 text-gray-500 hover:border-blue-300'"
-                  class="border px-2 py-2 text-[9px] font-bold font-mono uppercase tracking-wider transition-colors"
-                >
-                  <i class="fas fa-search mr-1"></i> Review
-                </button>
-                <button
-                  v-if="reviewTarget?.status === 'UNDER_REVIEW'"
-                  @click="reviewAction = 'approve'"
-                  :class="reviewAction === 'approve' ? 'bg-emerald-600 text-white border-emerald-600' : 'border-gray-200 text-gray-500 hover:border-emerald-300'"
-                  class="border px-2 py-2 text-[9px] font-bold font-mono uppercase tracking-wider transition-colors"
-                >
-                  <i class="fas fa-check mr-1"></i> Approve
-                </button>
-                <button
-                  v-if="reviewTarget?.status === 'UNDER_REVIEW'"
-                  @click="reviewAction = 'reject'"
-                  :class="reviewAction === 'reject' ? 'bg-red-600 text-white border-red-600' : 'border-gray-200 text-gray-500 hover:border-red-300'"
-                  class="border px-2 py-2 text-[9px] font-bold font-mono uppercase tracking-wider transition-colors"
-                >
-                  <i class="fas fa-times mr-1"></i> Reject
-                </button>
-                <button
-                  v-if="reviewTarget?.status === 'SUBMITTED'"
-                  @click="reviewAction = 'return'"
-                  :class="reviewAction === 'return' ? 'bg-purple-600 text-white border-purple-600' : 'border-gray-200 text-gray-500 hover:border-purple-300'"
-                  class="border px-2 py-2 text-[9px] font-bold font-mono uppercase tracking-wider transition-colors"
-                >
-                  <i class="fas fa-undo mr-1"></i> Return
-                </button>
+                <button v-if="reviewTarget?.status === 'SUBMITTED'" @click="reviewAction = 'review'" :class="reviewAction === 'review' ? 'bg-brand-600 text-white' : 'border-gray-200 text-gray-500 hover:border-brand-300'" class="border px-3 py-2.5 text-xs font-semibold rounded-xl transition-colors"><i class="fas fa-search mr-1"></i> Review</button>
+                <button v-if="reviewTarget?.status === 'UNDER_REVIEW'" @click="reviewAction = 'approve'" :class="reviewAction === 'approve' ? 'bg-emerald-600 text-white' : 'border-gray-200 text-gray-500 hover:border-emerald-300'" class="border px-3 py-2.5 text-xs font-semibold rounded-xl transition-colors"><i class="fas fa-check mr-1"></i> Approve</button>
+                <button v-if="reviewTarget?.status === 'UNDER_REVIEW'" @click="reviewAction = 'reject'" :class="reviewAction === 'reject' ? 'bg-red-600 text-white' : 'border-gray-200 text-gray-500 hover:border-red-300'" class="border px-3 py-2.5 text-xs font-semibold rounded-xl transition-colors"><i class="fas fa-times mr-1"></i> Reject</button>
+                <button v-if="reviewTarget?.status === 'SUBMITTED'" @click="reviewAction = 'return'" :class="reviewAction === 'return' ? 'bg-purple-600 text-white' : 'border-gray-200 text-gray-500 hover:border-purple-300'" class="border px-3 py-2.5 text-xs font-semibold rounded-xl transition-colors"><i class="fas fa-undo mr-1"></i> Return</button>
               </div>
             </div>
-
             <div v-if="reviewAction === 'reject' || reviewAction === 'return'">
-              <label class="block text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1">
-                Comment <span class="text-red-500">*</span>
-              </label>
-              <textarea v-model="reviewComment" rows="3" class="w-full bg-gray-50 border border-gray-200 text-[11px] font-mono focus:border-emerald-600 focus:ring-0" placeholder="Required for reject / return..."></textarea>
+              <label class="block text-xs font-semibold text-gray-600 mb-1.5">Comment <span class="text-red-500">*</span></label>
+              <textarea v-model="reviewComment" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="Required for reject / return..."></textarea>
             </div>
-
             <div v-if="reviewAction && reviewAction !== 'reject' && reviewAction !== 'return'">
-              <label class="block text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1">Comment (optional)</label>
-              <textarea v-model="reviewComment" rows="2" class="w-full bg-gray-50 border border-gray-200 text-[11px] font-mono focus:border-emerald-600 focus:ring-0" placeholder="Optional feedback..."></textarea>
+              <label class="block text-xs font-semibold text-gray-600 mb-1.5">Comment (optional)</label>
+              <textarea v-model="reviewComment" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500" placeholder="Optional feedback..."></textarea>
             </div>
-
-            <div v-if="actionError" class="bg-red-50 border border-red-200 px-4 py-2 text-[9px] font-bold text-red-700 uppercase">{{ actionError }}</div>
+            <div v-if="actionError" class="bg-red-50 border border-red-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-red-700">{{ actionError }}</div>
           </div>
-
           <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
-            <button @click="showReviewModal = false" class="px-4 py-2 text-[10px] font-bold font-mono text-gray-500 uppercase hover:bg-gray-200 transition-colors">Cancel</button>
-            <button @click="executeReview" :disabled="!reviewAction || actionLoading" class="px-6 py-2 bg-emerald-600 text-white text-[10px] font-bold font-mono uppercase hover:bg-emerald-700 transition-colors disabled:opacity-50">
-              {{ actionLoading ? 'PROCESSING...' : 'CONFIRM' }}
+            <button @click="showReviewModal = false" class="px-5 py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-200 rounded-xl transition-colors">Cancel</button>
+            <button @click="executeReview" :disabled="!reviewAction || actionLoading" class="px-6 py-2.5 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-700 transition-colors disabled:opacity-50 shadow-lg shadow-brand-600/20">
+              {{ actionLoading ? 'Processing...' : 'Confirm' }}
             </button>
           </div>
         </div>
@@ -229,11 +173,14 @@
     </main>
   </div>
 </template>
+               
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { listReviewQueue, transitionApplication } from '@/api_services/api'
+import AppLogo from '@/components/AppLogo.vue'
+import NotificationBell from '@/components/NotificationBell.vue'
 
 const router = useRouter()
 const user = ref(JSON.parse(localStorage.getItem('user') || '{}'))
@@ -273,22 +220,22 @@ const startIdx = computed(() => (page.value - 1) * perPage + 1)
 const endIdx = computed(() => Math.min(page.value * perPage, filteredApps.value.length))
 
 const kpiCards = computed(() => [
-  { label: 'Queue', icon: 'fas fa-inbox', color: 'text-emerald-600', value: applications.value.filter(a => ['SUBMITTED', 'UNDER_REVIEW', 'RETURNED_FOR_CHANGES'].includes(a.status)).length },
-  { label: 'Pending', icon: 'fas fa-clock', color: 'text-amber-600', value: applications.value.filter(a => a.status === 'SUBMITTED').length },
-  { label: 'In Review', icon: 'fas fa-search', color: 'text-blue-600', value: applications.value.filter(a => a.status === 'UNDER_REVIEW').length },
-  { label: 'Decided', icon: 'fas fa-gavel', color: 'text-purple-600', value: applications.value.filter(a => a.status === 'APPROVED' || a.status === 'REJECTED').length },
+  { label: 'Total', icon: 'fas fa-inbox', color: 'text-brand-600', bg: 'bg-brand-50', value: applications.value.length },
+  { label: 'Pending', icon: 'fas fa-clock', color: 'text-amber-600', bg: 'bg-amber-50', value: applications.value.filter(a => a.status === 'SUBMITTED').length },
+  { label: 'In Review', icon: 'fas fa-search', color: 'text-blue-600', bg: 'bg-blue-50', value: applications.value.filter(a => a.status === 'UNDER_REVIEW').length },
+  { label: 'Decided', icon: 'fas fa-gavel', color: 'text-purple-600', bg: 'bg-purple-50', value: applications.value.filter(a => a.status === 'APPROVED' || a.status === 'REJECTED').length },
 ])
 
 function statusBadgeClass(status) {
   const map = {
-    DRAFT: 'border-gray-200 bg-gray-50 text-gray-500',
-    SUBMITTED: 'border-amber-200 bg-amber-50 text-amber-600',
-    UNDER_REVIEW: 'border-blue-200 bg-blue-50 text-blue-600',
-    APPROVED: 'border-emerald-200 bg-emerald-50 text-emerald-600',
-    REJECTED: 'border-red-200 bg-red-50 text-red-600',
-    RETURNED_FOR_CHANGES: 'border-purple-200 bg-purple-50 text-purple-600',
+    DRAFT: 'bg-gray-100 text-gray-600',
+    SUBMITTED: 'bg-amber-100 text-amber-700',
+    UNDER_REVIEW: 'bg-blue-100 text-blue-700',
+    APPROVED: 'bg-emerald-100 text-emerald-700',
+    REJECTED: 'bg-red-100 text-red-700',
+    RETURNED_FOR_CHANGES: 'bg-purple-100 text-purple-700',
   }
-  return map[status] || 'border-gray-200 bg-gray-50 text-gray-500'
+  return map[status] || 'bg-gray-100 text-gray-600'
 }
 
 function formatAmount(n) {
@@ -303,7 +250,7 @@ function formatDate(d) {
 async function fetchQueue() {
   loading.value = true
   try {
-    const params = { limit: 500 }
+    const params = { limit: 200 }
     if (statusFilter.value) params.status = statusFilter.value
     if (searchQuery.value) params.search = searchQuery.value
     const res = await listReviewQueue(params)

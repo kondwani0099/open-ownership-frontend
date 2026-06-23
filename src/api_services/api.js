@@ -39,6 +39,10 @@ export function login(email, password) {
   return api.post('/auth/login', { email, password })
 }
 
+export function register(name, email, password, role) {
+  return api.post('/auth/register', { name, email, password, role })
+}
+
 export function getMe() {
   return api.get('/auth/me')
 }
@@ -71,4 +75,10 @@ export function getApplicationDetail(id) {
 
 export function transitionApplication(id, action, comment = '') {
   return api.post(`/applications/${id}/transition`, { action, comment })
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+
+export function getNotifications(params = {}) {
+  return api.get('/notifications/', { params })
 }

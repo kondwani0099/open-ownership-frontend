@@ -1,34 +1,32 @@
 <template>
-  <div class="min-h-screen flex flex-col font-mono relative text-gray-900 bg-gray-50">
-    <div class="fixed inset-0 z-0 pointer-events-none mesh-background"></div>
-
+  <div class="min-h-screen flex flex-col text-gray-900 bg-gray-50">
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-[100] shadow-sm">
-      <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <button @click="goBack" class="text-gray-400 hover:text-[#2F2E8B] transition-colors mr-2">
-            <i class="fas fa-arrow-left text-lg"></i>
+    <header class="bg-white/80 backdrop-blur-xl border-b border-gray-100/50 sticky top-0 z-[100]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <AppLogo />
+          <div class="w-px h-8 bg-gray-200 hidden sm:block"></div>
+          <button @click="goBack" class="text-gray-400 hover:text-brand-600 transition-colors mr-1 p-1 rounded-lg">
+            <i class="fas fa-arrow-left"></i>
           </button>
-          <div class="w-1.5 h-8 bg-blue-600"></div>
           <div>
-            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <i class="fas fa-file-alt text-blue-600"></i>
-              <span>Application // Detail</span>
+            <div class="text-[10px] font-semibold text-gray-400 tracking-wider flex items-center gap-2">
+              <i class="fas fa-file-alt text-brand-600"></i>
+              <span>Application Detail</span>
             </div>
-            <h1 class="text-xl font-black text-gray-900 uppercase tracking-tight font-display">{{ application?.title || 'Loading...' }}</h1>
+            <h1 class="text-lg font-bold text-gray-900">{{ application?.title || 'Loading...' }}</h1>
           </div>
         </div>
-        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+        <span class="text-xs font-medium text-gray-400">
           <i class="fas fa-circle text-emerald-400 text-[6px] mr-1"></i> {{ user?.email }}
         </span>
       </div>
     </header>
 
-    <!-- Main -->
-    <main class="flex-1 max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 relative z-10 space-y-6">
+    <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 space-y-6">
       <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-        <div class="h-12 w-12 border-4 border-gray-100 border-t-blue-600 rounded-full animate-spin shadow-lg mb-4"></div>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest animate-pulse">Loading Application...</p>
+        <div class="h-12 w-12 border-4 border-gray-100 border-t-brand-600 rounded-full animate-spin mb-4"></div>
+        <p class="text-xs font-medium text-gray-400 animate-pulse">Loading Application...</p>
       </div>
 
       <div v-else-if="error" class="bg-red-50 border border-red-200 p-6 text-center">
@@ -204,6 +202,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getApplicationDetail, transitionApplication } from '@/api_services/api'
+import AppLogo from '@/components/AppLogo.vue'
 
 const route = useRoute()
 const router = useRouter()
